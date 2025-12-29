@@ -1,0 +1,2699 @@
+<!doctype doctype>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Presentation Maker - Create Stunning Presentations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;family=Montserrat:wght@300;400;500;600;700;800&amp;family=Roboto:wght@300;400;500;700&amp;family=Lato:wght@300;400;700&amp;family=Playfair+Display:wght@400;500;600;700&amp;family=Raleway:wght@300;400;500;600;700&amp;family=Nunito:wght@300;400;600;700&amp;family=Merriweather:wght@300;400;700&amp;family=Open+Sans:wght@300;400;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --dark-bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #a8b2d1;
+            --accent-purple: #667eea;
+            --accent-pink: #f5576c;
+            --accent-blue: #4facfe;
+            --accent-cyan: #00f2fe;
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 30px 90px rgba(0, 0, 0, 0.4);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .app-container {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Auth Pages Styling */
+        .auth-page {
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+
+        .auth-container {
+            background: rgba(22, 33, 62, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px 60px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 480px;
+            width: 100%;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-logo i {
+            font-size: 56px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-title {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition-smooth);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: rgba(168, 178, 209, 0.5);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .auth-link a {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .auth-link a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        /* Dashboard Styling */
+        .dashboard {
+            display: none;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        .dashboard.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: rgba(22, 33, 62, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navbar-brand i {
+            font-size: 32px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .btn-logout {
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-wrapper {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .side-panel {
+            width: 280px;
+            background: rgba(22, 33, 62, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-panel-section {
+            margin-bottom: 30px;
+            padding: 0 25px;
+        }
+
+        .side-panel-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .side-panel-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .side-panel-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-purple);
+            transform: translateX(5px);
+        }
+
+        .side-panel-item.active {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .side-panel-item i {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .side-panel-item span {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .profile-section {
+            margin-top: auto;
+            padding: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .profile-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .content-view {
+            display: none;
+        }
+
+        .content-view.active {
+            display: block;
+        }
+
+        /* History Page Styles */
+        .history-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .history-item {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-smooth);
+        }
+
+        .history-item:hover {
+            border-color: var(--accent-purple);
+            transform: translateX(5px);
+        }
+
+        .history-info h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .history-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Settings Page Styles */
+        .settings-card {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .settings-card h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .setting-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Profile Info Page Styles */
+        .profile-info-card {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .profile-details {
+            display: grid;
+            gap: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        /* Input Mode Cards */
+        .input-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .mode-card {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            z-index: 0;
+        }
+
+        .mode-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-purple);
+        }
+
+        .mode-card.active {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .mode-card.active::before {
+            opacity: 0.15;
+        }
+
+        .mode-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .mode-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mode-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .mode-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Input Sections */
+        .input-section {
+            display: none;
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .input-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-header i {
+            font-size: 32px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-header h3 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .form-row {
+            margin-bottom: 25px;
+        }
+
+        .textarea-large {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            resize: vertical;
+            transition: var(--transition-smooth);
+        }
+
+        .textarea-large:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-upload-input {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-align: center;
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .file-upload-label i {
+            font-size: 40px;
+            color: var(--accent-purple);
+        }
+
+        .file-name {
+            color: var(--accent-cyan);
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-gradient);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition-smooth);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 33px;
+        }
+
+        .toggle-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .number-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .number-input {
+            width: 100px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-generate {
+            padding: 16px 40px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            font-family: 'Poppins', sans-serif;
+            margin-top: 20px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Presentation Output */
+        .presentation-output {
+            display: none;
+            margin-top: 50px;
+        }
+
+        .presentation-output.active {
+            display: block;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .output-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .output-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .customization-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .custom-select-wrapper {
+            position: relative;
+        }
+
+        .custom-select-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .custom-select {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 45px;
+        }
+
+        .custom-select:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .slides-container {
+            display: grid;
+            gap: 25px;
+        }
+
+        .slide-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transition: var(--transition-smooth);
+        }
+
+        .slide-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .slide-number {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--accent-purple);
+            background: rgba(102, 126, 234, 0.1);
+            padding: 6px 14px;
+            border-radius: 8px;
+        }
+
+        .slide-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.1);
+        }
+
+        .btn-icon.delete:hover {
+            background: rgba(245, 87, 108, 0.2);
+            border-color: var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        .slide-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .slide-title:focus {
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .slide-content {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            min-height: 120px;
+            outline: none;
+            transition: var(--transition-smooth);
+            line-height: 1.8;
+        }
+
+        .slide-content:focus {
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-add-slide {
+            width: 100%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-add-slide:hover {
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        /* Theme Styles */
+        .theme-neon-tech {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+        }
+
+        .theme-corporate-blue {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .theme-sunset-gradient {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+        }
+
+        .theme-dark-mode-pro {
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+        }
+
+        .theme-pastel-dream {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .theme-cyber-purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .theme-ocean-wave {
+            background: linear-gradient(135deg, #2e3192 0%, #1bffff 100%);
+        }
+
+        .theme-royal-gold {
+            background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
+        }
+
+        .theme-minimal-white {
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            color: #333;
+        }
+
+        .theme-vibrant-education {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* Editor Page Styles */
+        .editor-page {
+            display: none;
+        }
+
+        .editor-page.active {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .editor-toolbar {
+            background: rgba(22, 33, 62, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .editor-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .editor-sidebar {
+            width: 320px;
+            background: rgba(22, 33, 62, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .editor-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .slide-preview {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .slide-preview:hover {
+            border-color: var(--accent-purple);
+            transform: scale(1.02);
+        }
+
+        .slide-preview.active {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .slide-preview-number {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .slide-preview-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .slide-preview-content {
+            font-size: 11px;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .current-slide-editor {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            min-height: 500px;
+        }
+
+        .slide-editor-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .slide-editor-title:focus {
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .slide-editor-content {
+            font-size: 18px;
+            line-height: 2;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            min-height: 300px;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .slide-editor-content:focus {
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .custom-select option {
+            background: #16213e;
+            color: #ffffff;
+            padding: 10px;
+            font-weight: 600;
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 40px 30px;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .navbar-brand {
+                font-size: 20px;
+            }
+
+            .side-panel {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100%;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .side-panel.mobile-open {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .input-modes {
+                grid-template-columns: 1fr;
+            }
+
+            .input-section {
+                padding: 25px;
+            }
+
+            .output-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .customization-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-sidebar {
+                width: 250px;
+            }
+
+            .editor-main {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px 20px;
+            }
+
+            .auth-title {
+                font-size: 24px;
+            }
+
+            .mode-card {
+                padding: 30px 20px;
+            }
+
+            .mode-icon {
+                font-size: 40px;
+            }
+
+            .slide-card {
+                padding: 20px;
+            }
+
+            .current-slide-editor {
+                padding: 25px;
+            }
+
+            .slide-editor-title {
+                font-size: 24px;
+            }
+
+            .slide-editor-content {
+                font-size: 16px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+  <!-- API Integration Module -->
+  <script src="api.js" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-container"><!-- Login Page -->
+   <div id="loginPage" class="auth-page">
+    <div class="auth-container">
+     <div class="auth-logo"><i class="fas fa-presentation"></i>
+     </div>
+     <h1 class="auth-title">Welcome Back</h1>
+     <p class="auth-subtitle">Sign in to create amazing presentations</p>
+     <form id="loginForm" novalidate>
+      <div class="form-group"><label for="loginEmail">Email Address</label> <input type="email" id="loginEmail" class="form-input" placeholder="your@email.com" required>
+       <div class="error-message" id="loginEmailError">
+        Please enter a valid email
+       </div>
+      </div>
+      <div class="form-group"><label for="loginPassword">Password</label> <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+       <div class="error-message" id="loginPasswordError">
+        Password is required
+       </div>
+      </div><button type="submit" class="btn-primary"> <i class="fas fa-sign-in-alt"></i> Sign In </button>
+     </form>
+     <div class="auth-link">
+      Don't have an account? <a href="#" id="goToSignup">Sign up</a>
+     </div>
+    </div>
+   </div><!-- Signup Page -->
+   <div id="signupPage" class="auth-page hidden">
+    <div class="auth-container">
+     <div class="auth-logo"><i class="fas fa-presentation"></i>
+     </div>
+     <h1 class="auth-title">Create Account</h1>
+     <p class="auth-subtitle">Join us and start creating presentations</p>
+     <form id="signupForm" novalidate>
+      <div class="form-group"><label for="signupName">Full Name</label> <input type="text" id="signupName" class="form-input" placeholder="John Doe" required>
+       <div class="error-message" id="signupNameError">
+        Name is required
+       </div>
+      </div>
+      <div class="form-group"><label for="signupEmail">Email Address</label> <input type="email" id="signupEmail" class="form-input" placeholder="your@email.com" required>
+       <div class="error-message" id="signupEmailError">
+        Please enter a valid email
+       </div>
+      </div>
+      <div class="form-group"><label for="signupPassword">Password</label> <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
+       <div class="error-message" id="signupPasswordError">
+        Password must be at least 6 characters
+       </div>
+      </div>
+      <div class="form-group"><label for="signupConfirmPassword">Confirm Password</label> <input type="password" id="signupConfirmPassword" class="form-input" placeholder="Confirm your password" required>
+       <div class="error-message" id="signupConfirmPasswordError">
+        Passwords do not match
+       </div>
+      </div><button type="submit" class="btn-primary"> <i class="fas fa-user-plus"></i> Create Account </button>
+     </form>
+     <div class="auth-link">
+      Already have an account? <a href="#" id="goToLogin">Sign in</a>
+     </div>
+    </div>
+   </div><!-- Dashboard -->
+   <div id="dashboard" class="dashboard">
+    <nav class="navbar">
+     <div class="navbar-brand"><i class="fas fa-presentation"></i> <span id="appTitle">AI Presentation Maker</span>
+     </div>
+     <div class="user-menu"><span class="user-name">Welcome, <span id="userName">User</span></span> <button class="btn-logout" id="logoutBtn"> <i class="fas fa-sign-out-alt"></i> Logout </button>
+     </div>
+    </nav>
+    <div class="dashboard-wrapper"><!-- Side Panel -->
+     <aside class="side-panel">
+      <div class="side-panel-section">
+       <h4 class="side-panel-title">Menu</h4>
+       <div class="side-panel-item active" data-view="home"><i class="fas fa-home"></i> <span>Home</span>
+       </div>
+       <div class="side-panel-item" data-view="history"><i class="fas fa-history"></i> <span>History</span>
+       </div>
+       <div class="side-panel-item" data-view="settings"><i class="fas fa-cog"></i> <span>Settings</span>
+       </div>
+       <div class="side-panel-item" data-view="profile"><i class="fas fa-user"></i> <span>Profile Info</span>
+       </div>
+      </div>
+      <div class="profile-section">
+       <div class="profile-card">
+        <div class="profile-avatar" id="sidebarAvatar">
+         U
+        </div>
+        <div class="profile-name" id="sidebarName">
+         User
+        </div>
+        <div class="profile-email" id="sidebarEmail">
+         user@email.com
+        </div>
+       </div>
+      </div>
+     </aside><!-- Main Content Area -->
+     <main class="main-content"><!-- Home View -->
+      <div id="homeView" class="content-view active">
+       <h1 class="section-title">Create Your Presentation</h1>
+       <p class="section-subtitle" id="heroTagline">Choose your input method and let AI do the magic</p><!-- Input Mode Selection -->
+       <div class="input-modes">
+        <div class="mode-card" data-mode="text">
+         <div class="mode-icon">
+          <i class="fas fa-file-alt"></i>
+         </div>
+         <h3 class="mode-title">Text</h3>
+         <p class="mode-description">Type or paste your content directly</p>
+        </div>
+        <div class="mode-card" data-mode="pdf">
+         <div class="mode-icon">
+          <i class="fas fa-file-pdf"></i>
+         </div>
+         <h3 class="mode-title">PDF</h3>
+         <p class="mode-description">Upload a PDF document</p>
+        </div>
+        <div class="mode-card" data-mode="url">
+         <div class="mode-icon">
+          <i class="fas fa-link"></i>
+         </div>
+         <h3 class="mode-title">URL</h3>
+         <p class="mode-description">Extract content from a website</p>
+        </div>
+        <div class="mode-card" data-mode="topic">
+         <div class="mode-icon">
+          <i class="fas fa-lightbulb"></i>
+         </div>
+         <h3 class="mode-title">Topic</h3>
+         <p class="mode-description">Generate from a topic or keywords</p>
+        </div>
+       </div><!-- Text Input Section -->
+       <div id="textSection" class="input-section">
+        <div class="input-header"><i class="fas fa-file-alt"></i>
+         <h3>Text Input</h3>
+        </div>
+        <div class="form-row"><label class="custom-select-label">Presentation Title</label> <input type="text" class="form-input" id="textTitle" placeholder="Enter presentation title">
+        </div>
+        <div class="form-row"><label class="custom-select-label">Content</label> <textarea class="textarea-large" id="textContent" placeholder="Type or paste your content here..."></textarea>
+        </div>
+        <div class="form-row"><label class="custom-select-label">Number of Slides</label>
+         <div class="number-input-wrapper"><input type="number" class="number-input" id="textSlideCount" value="5" min="3" max="20"> <span class="toggle-label">slides</span>
+         </div>
+        </div><button class="btn-generate" id="generateFromText"> <i class="fas fa-magic"></i> <span id="ctaButtonText">Generate Presentation</span> </button>
+       </div><!-- PDF Input Section -->
+       <div id="pdfSection" class="input-section">
+        <div class="input-header"><i class="fas fa-file-pdf"></i>
+         <h3>PDF Upload</h3>
+        </div>
+        <div class="form-row"><label class="custom-select-label">Presentation Title</label> <input type="text" class="form-input" id="pdfTitle" placeholder="Enter presentation title">
+        </div>
+        <div class="form-row">
+         <div class="file-upload-wrapper"><input type="file" id="pdfFile" class="file-upload-input" accept=".pdf"> <label for="pdfFile" class="file-upload-label"> <i class="fas fa-cloud-upload-alt"></i>
+           <div>
+            <div>
+             Click to upload PDF
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+             or drag and drop
+            </div>
+           </div></label>
+          <div class="file-name" id="pdfFileName"></div>
+         </div>
+        </div>
+        <div class="form-row"><label class="custom-select-label">Number of Slides</label>
+         <div class="number-input-wrapper"><input type="number" class="number-input" id="pdfSlideCount" value="5" min="3" max="20"> <span class="toggle-label">slides</span>
+         </div>
+        </div>
+        <div class="toggle-wrapper">
+         <div class="toggle-switch" id="pdfToggle">
+          <div class="toggle-slider"></div>
+         </div><label class="toggle-label">PDF Content + AI Generated Content</label>
+        </div><button class="btn-generate" id="generateFromPdf"> <i class="fas fa-magic"></i> Generate Presentation </button>
+       </div><!-- URL Input Section -->
+       <div id="urlSection" class="input-section">
+        <div class="input-header"><i class="fas fa-link"></i>
+         <h3>URL Input</h3>
+        </div>
+        <div class="form-row"><label class="custom-select-label">Presentation Title</label> <input type="text" class="form-input" id="urlTitle" placeholder="Enter presentation title">
+        </div>
+        <div class="form-row"><label class="custom-select-label">Website URL</label> <input type="url" class="form-input" id="urlInput" placeholder="https://example.com">
+        </div>
+        <div class="form-row"><label class="custom-select-label">Number of Slides</label>
+         <div class="number-input-wrapper"><input type="number" class="number-input" id="urlSlideCount" value="5" min="3" max="20"> <span class="toggle-label">slides</span>
+         </div>
+        </div>
+        <div class="toggle-wrapper">
+         <div class="toggle-switch" id="urlToggle">
+          <div class="toggle-slider"></div>
+         </div><label class="toggle-label">Website Content + AI Enhancement</label>
+        </div><button class="btn-generate" id="generateFromUrl"> <i class="fas fa-magic"></i> Generate Presentation </button>
+       </div><!-- Topic Input Section -->
+       <div id="topicSection" class="input-section">
+        <div class="input-header"><i class="fas fa-lightbulb"></i>
+         <h3>Topic Generator</h3>
+        </div>
+        <div class="form-row"><label class="custom-select-label">Presentation Title</label> <input type="text" class="form-input" id="topicTitle" placeholder="Enter presentation title">
+        </div>
+        <div class="form-row"><label class="custom-select-label">Main Topic</label> <input type="text" class="form-input" id="topicInput" placeholder="e.g., Climate Change, Digital Marketing">
+        </div>
+        <div class="form-row"><label class="custom-select-label">Keywords (Optional)</label> <input type="text" class="form-input" id="topicKeywords" placeholder="e.g., sustainability, renewable energy">
+        </div>
+        <div class="form-row"><label class="custom-select-label">Number of Slides</label>
+         <div class="number-input-wrapper"><input type="number" class="number-input" id="slideCount" value="5" min="3" max="20"> <span class="toggle-label">slides</span>
+         </div>
+        </div><button class="btn-generate" id="generateFromTopic"> <i class="fas fa-magic"></i> Generate Presentation </button>
+       </div><!-- Loading State -->
+       <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <p>Creating your presentation...</p>
+       </div>
+      </div><!-- History View -->
+      <div id="historyView" class="content-view">
+       <h1 class="section-title">Presentation History</h1>
+       <p class="section-subtitle">View and manage your past presentations</p>
+       <div class="history-list" id="historyList"><!-- History items will be dynamically added here -->
+       </div>
+      </div><!-- Settings View -->
+      <div id="settingsView" class="content-view">
+       <h1 class="section-title">Settings</h1>
+       <p class="section-subtitle">Customize your application preferences</p>
+       <div class="settings-card">
+        <h3>Appearance</h3>
+        <div class="setting-item">
+         <div class="setting-info">
+          <h4>Theme Mode</h4>
+          <p>Choose your preferred theme</p>
+         </div>
+         <div class="toggle-switch" id="settingsThemeToggle">
+          <div class="toggle-slider"></div>
+         </div>
+        </div>
+        <div class="setting-item">
+         <div class="setting-info">
+          <h4>Animations</h4>
+          <p>Enable or disable animations</p>
+         </div>
+         <div class="toggle-switch active" id="settingsAnimToggle">
+          <div class="toggle-slider"></div>
+         </div>
+        </div>
+       </div>
+       <div class="settings-card">
+        <h3>Notifications</h3>
+        <div class="setting-item">
+         <div class="setting-info">
+          <h4>Email Notifications</h4>
+          <p>Receive updates via email</p>
+         </div>
+         <div class="toggle-switch active" id="settingsEmailToggle">
+          <div class="toggle-slider"></div>
+         </div>
+        </div>
+       </div>
+       <div class="settings-card">
+        <h3>Privacy &amp; Security</h3>
+        <div class="setting-item">
+         <div class="setting-info">
+          <h4>Auto-save Presentations</h4>
+          <p>Automatically save your work</p>
+         </div>
+         <div class="toggle-switch active" id="settingsAutosaveToggle">
+          <div class="toggle-slider"></div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Profile Info View -->
+      <div id="profileView" class="content-view">
+       <h1 class="section-title">Profile Information</h1>
+       <p class="section-subtitle">Your account details</p>
+       <div class="profile-info-card">
+        <div class="profile-header">
+         <div class="profile-avatar-large" id="profileAvatarLarge">
+          U
+         </div>
+         <h2 id="profileNameLarge">User Name</h2>
+        </div>
+        <div class="profile-details">
+         <div class="detail-row"><span class="detail-label">Full Name</span> <span class="detail-value" id="profileFullName">User Name</span>
+         </div>
+         <div class="detail-row"><span class="detail-label">Email</span> <span class="detail-value" id="profileEmailDetail">user@email.com</span>
+         </div>
+         <div class="detail-row"><span class="detail-label">Account Type</span> <span class="detail-value">Free</span>
+         </div>
+         <div class="detail-row"><span class="detail-label">Member Since</span> <span class="detail-value" id="profileMemberSince">January 2024</span>
+         </div>
+         <div class="detail-row"><span class="detail-label">Total Presentations</span> <span class="detail-value" id="profileTotalPres">0</span>
+         </div>
+        </div><button class="btn-primary" style="margin-top: 30px;"> <i class="fas fa-edit"></i> Edit Profile </button>
+       </div>
+      </div>
+     </main>
+    </div>
+   </div><!-- Editor Page -->
+   <div id="editorPage" class="editor-page">
+    <div class="editor-toolbar">
+     <div class="navbar-brand"><i class="fas fa-presentation"></i> <span id="editorPresentationTitle">Presentation Editor</span>
+     </div>
+     <div class="editor-actions">
+      <div class="custom-select-wrapper" style="margin: 0;"><select class="custom-select" id="editorThemeSelect" style="padding: 10px 40px 10px 15px;"> <option value="neon-tech">Neon Tech</option> <option value="corporate-blue">Corporate Blue</option> <option value="sunset-gradient">Sunset Gradient</option> <option value="dark-mode-pro">Dark Mode Pro</option> <option value="pastel-dream">Pastel Dream</option> <option value="cyber-purple" selected>Cyber Purple</option> <option value="ocean-wave">Ocean Wave</option> <option value="royal-gold">Royal Gold</option> <option value="minimal-white">Minimal White</option> <option value="vibrant-education">Vibrant Education</option> </select>
+      </div>
+      <div class="custom-select-wrapper" style="margin: 0;"><select class="custom-select" id="editorFontSelect" style="padding: 10px 40px 10px 15px;"> <option value="Poppins" selected>Poppins</option> <option value="Montserrat">Montserrat</option> <option value="Roboto">Roboto</option> <option value="Lato">Lato</option> <option value="Playfair Display">Playfair Display</option> <option value="Raleway">Raleway</option> <option value="Nunito">Nunito</option> <option value="Merriweather">Merriweather</option> <option value="Open Sans">Open Sans</option> <option value="Inter">Inter</option> </select>
+      </div><button class="btn-secondary" id="backToDashboard"> <i class="fas fa-arrow-left"></i> Back to Dashboard </button> <button class="btn-secondary" id="exportPPTXBtn" onclick="exportToPowerPoint()"> <i class="fas fa-download"></i> Export </button>
+     </div>
+    </div>
+    <div class="editor-content">
+     <div class="editor-sidebar">
+      <h3 style="margin-bottom: 20px; font-size: 18px;">Slides</h3>
+      <div id="slidePreviews"></div><button class="btn-add-slide" id="editorAddSlideBtn" style="margin-top: 20px;"> <i class="fas fa-plus"></i> Add Slide </button>
+     </div>
+     <div class="editor-main">
+      <div class="current-slide-editor" id="currentSlideEditor">
+       <div class="slide-editor-title" contenteditable="true" id="currentSlideTitle">
+        Slide Title
+       </div>
+       <div class="slide-editor-content" contenteditable="true" id="currentSlideContent">
+        • Slide content here\n• Click to edit
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+        // Configuration object
+        const defaultConfig = {
+            app_title: "AI Presentation Maker",
+            hero_tagline: "Choose your input method and let AI do the magic",
+            cta_button_text: "Generate Presentation"
+        };
+
+        // State management
+        let currentUser = null;
+        let slides = [];
+        let currentTheme = 'cyber-purple';
+        let currentFont = 'Poppins';
+        let currentSlideIndex = 0;
+        let presentationHistory = [];
+
+        // Initialize Element SDK
+        async function onConfigChange(config) {
+            const appTitle = config.app_title || defaultConfig.app_title;
+            const heroTagline = config.hero_tagline || defaultConfig.hero_tagline;
+            const ctaButtonText = config.cta_button_text || defaultConfig.cta_button_text;
+
+            const appTitleElement = document.getElementById('appTitle');
+            if (appTitleElement) {
+                appTitleElement.textContent = appTitle;
+            }
+
+            const heroTaglineElement = document.getElementById('heroTagline');
+            if (heroTaglineElement) {
+                heroTaglineElement.textContent = heroTagline;
+            }
+
+            const ctaButtons = document.querySelectorAll('#generateFromText span, .btn-generate span');
+            ctaButtons.forEach(btn => {
+                if (btn.textContent.includes('Generate')) {
+                    btn.textContent = ctaButtonText;
+                }
+            });
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig: defaultConfig,
+                onConfigChange: onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["app_title", config.app_title || defaultConfig.app_title],
+                    ["hero_tagline", config.hero_tagline || defaultConfig.hero_tagline],
+                    ["cta_button_text", config.cta_button_text || defaultConfig.cta_button_text]
+                ])
+            });
+        }
+
+        // DOM Elements
+        const loginPage = document.getElementById('loginPage');
+        const signupPage = document.getElementById('signupPage');
+        const dashboard = document.getElementById('dashboard');
+        const editorPage = document.getElementById('editorPage');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const goToSignup = document.getElementById('goToSignup');
+        const goToLogin = document.getElementById('goToLogin');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Side Panel Navigation
+        const sidePanelItems = document.querySelectorAll('.side-panel-item');
+        const contentViews = document.querySelectorAll('.content-view');
+
+        sidePanelItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const viewName = item.dataset.view;
+                
+                // Update active states
+                sidePanelItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Show corresponding view
+                contentViews.forEach(view => view.classList.remove('active'));
+                document.getElementById(`${viewName}View`).classList.add('active');
+                
+                // Load view-specific data
+                if (viewName === 'history') {
+                    loadHistoryView();
+                }
+            });
+        });
+
+        // Settings toggle switches
+        const settingsToggles = [
+            'settingsThemeToggle',
+            'settingsAnimToggle',
+            'settingsEmailToggle',
+            'settingsAutosaveToggle'
+        ];
+
+        settingsToggles.forEach(toggleId => {
+            const toggle = document.getElementById(toggleId);
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    toggle.classList.toggle('active');
+                });
+            }
+        });
+
+        // Load history view
+        function loadHistoryView() {
+            const historyList = document.getElementById('historyList');
+            
+            if (presentationHistory.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No presentations created yet. Start by creating your first presentation!</p>';
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            presentationHistory.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-info">
+                        <h3>${item.title}</h3>
+                        <div class="history-meta">
+                            <span><i class="fas fa-file-alt"></i> ${item.slideCount} slides</span>
+                            <span><i class="fas fa-clock"></i> ${item.date}</span>
+                            ${item.source ? `<span><i class="fas fa-tag"></i> ${item.source}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="history-actions">
+                        <button class="btn-icon" onclick="editPresentation(${index})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="deletePresentation(${index}, '${item.id || ''}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Global functions for history actions
+        window.editPresentation = function(index) {
+            const presentation = presentationHistory[index];
+            slides = presentation.slides;
+            currentTheme = presentation.theme || 'cyber-purple';
+            currentFont = presentation.font || 'Poppins';
+            openEditor(presentation.title);
+        };
+
+        window.deletePresentation = async function(index, apiId) {
+            const confirmDelete = document.createElement('div');
+            confirmDelete.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(22, 33, 62, 0.98); padding: 30px; border-radius: 20px; border: 2px solid rgba(255, 255, 255, 0.2); z-index: 10000; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);';
+            confirmDelete.innerHTML = `
+                <h3 style="margin-bottom: 20px; font-size: 20px;">Delete Presentation?</h3>
+                <p style="margin-bottom: 25px; color: var(--text-secondary);">This action cannot be undone.</p>
+                <div style="display: flex; gap: 15px;">
+                    <button id="confirmDeleteBtn" class="btn-primary" style="flex: 1; background: linear-gradient(135deg, #f5576c 0%, #fa709a 100%);">Delete</button>
+                    <button id="cancelDeleteBtn" class="btn-secondary" style="flex: 1;">Cancel</button>
+                </div>
+            `;
+            
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 9999;';
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(confirmDelete);
+            
+            document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+                try {
+                    // Delete from API if has ID
+                    if (apiId) {
+                        await API.deletePresentation(apiId);
+                    }
+                    
+                    // Remove from local history
+                    presentationHistory.splice(index, 1);
+                    document.body.removeChild(overlay);
+                    document.body.removeChild(confirmDelete);
+                    loadHistoryView();
+                    updateProfileStats();
+                    
+                    API.showToast('Presentation deleted', 'success');
+                } catch (error) {
+                    API.showToast(error.message || 'Failed to delete', 'error');
+                    document.body.removeChild(overlay);
+                    document.body.removeChild(confirmDelete);
+                }
+            });
+            
+            document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+                document.body.removeChild(overlay);
+                document.body.removeChild(confirmDelete);
+            });
+            
+            overlay.addEventListener('click', () => {
+                document.body.removeChild(overlay);
+                document.body.removeChild(confirmDelete);
+            });
+        };
+
+        // Update user profile information
+        function updateUserProfile(user) {
+            const initial = user.name.charAt(0).toUpperCase();
+            
+            // Update sidebar
+            document.getElementById('sidebarAvatar').textContent = initial;
+            document.getElementById('sidebarName').textContent = user.name;
+            document.getElementById('sidebarEmail').textContent = user.email;
+            
+            // Update profile view
+            document.getElementById('profileAvatarLarge').textContent = initial;
+            document.getElementById('profileNameLarge').textContent = user.name;
+            document.getElementById('profileFullName').textContent = user.name;
+            document.getElementById('profileEmailDetail').textContent = user.email;
+            
+            const now = new Date();
+            document.getElementById('profileMemberSince').textContent = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            updateProfileStats();
+        }
+
+        function updateProfileStats() {
+            document.getElementById('profileTotalPres').textContent = presentationHistory.length;
+        }
+
+        // Email validation
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        // Hide error message
+        function hideError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+        }
+
+        // Login form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            
+            let isValid = true;
+
+            // Reset errors
+            hideError('loginEmailError');
+            hideError('loginPasswordError');
+
+            // Validate email
+            if (!email || !isValidEmail(email)) {
+                showError('loginEmailError', 'Please enter a valid email');
+                isValid = false;
+            }
+
+            // Validate password
+            if (!password) {
+                showError('loginPasswordError', 'Password is required');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Show loading state
+                API.showButtonLoading(submitBtn, 'Signing in...');
+                
+                try {
+                    // Call login API
+                    const response = await API.login(email, password);
+                    
+                    if (response.success && response.data) {
+                        // Store user data
+                        currentUser = response.data.user;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        
+                        // Update UI
+                        document.getElementById('userName').textContent = currentUser.name;
+                        updateUserProfile(currentUser);
+                        
+                        // Show dashboard
+                        loginPage.classList.add('hidden');
+                        dashboard.classList.add('active');
+                        
+                        API.showToast('Login successful!', 'success');
+                        
+                        // Load presentation history
+                        loadPresentationHistory();
+                    }
+                } catch (error) {
+                    API.showToast(error.message || 'Login failed', 'error');
+                    showError('loginPasswordError', error.message || 'Invalid credentials');
+                } finally {
+                    API.hideButtonLoading(submitBtn);
+                }
+            }
+        });
+
+        // Signup form submission
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const submitBtn = signupForm.querySelector('button[type="submit"]');
+            
+            let isValid = true;
+
+            // Reset errors
+            hideError('signupNameError');
+            hideError('signupEmailError');
+            hideError('signupPasswordError');
+            hideError('signupConfirmPasswordError');
+
+            // Validate name
+            if (!name) {
+                showError('signupNameError', 'Name is required');
+                isValid = false;
+            }
+
+            // Validate email
+            if (!email || !isValidEmail(email)) {
+                showError('signupEmailError', 'Please enter a valid email');
+                isValid = false;
+            }
+
+            // Validate password
+            if (!password || password.length < 6) {
+                showError('signupPasswordError', 'Password must be at least 6 characters');
+                isValid = false;
+            }
+
+            // Validate confirm password
+            if (password !== confirmPassword) {
+                showError('signupConfirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Show loading state
+                API.showButtonLoading(submitBtn, 'Creating account...');
+                
+                try {
+                    // Call signup API
+                    const response = await API.signup(name, email, password);
+                    
+                    if (response.success && response.data) {
+                        API.showToast('Account created successfully! Please login.', 'success');
+                        
+                        // Clear form
+                        signupForm.reset();
+                        
+                        // Redirect to login page
+                        signupPage.classList.add('hidden');
+                        loginPage.classList.remove('hidden');
+                        
+                        // Pre-fill email in login form
+                        document.getElementById('loginEmail').value = email;
+                    }
+                } catch (error) {
+                    API.showToast(error.message || 'Signup failed', 'error');
+                    if (error.message.includes('email') || error.message.includes('exists')) {
+                        showError('signupEmailError', error.message);
+                    }
+                } finally {
+                    API.hideButtonLoading(submitBtn);
+                }
+            }
+        });
+
+        // Navigation between auth pages
+        goToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginPage.classList.add('hidden');
+            signupPage.classList.remove('hidden');
+        });
+
+        goToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupPage.classList.add('hidden');
+            loginPage.classList.remove('hidden');
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            // Call logout API (clears tokens)
+            API.logout();
+            
+            currentUser = null;
+            presentationHistory = [];
+            dashboard.classList.remove('active');
+            loginPage.classList.remove('hidden');
+            resetDashboard();
+            
+            // Clear form fields
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            
+            API.showToast('Logged out successfully', 'info');
+        });
+
+        // Mode card selection
+        const modeCards = document.querySelectorAll('.mode-card');
+        const inputSections = document.querySelectorAll('.input-section');
+
+        modeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const mode = card.dataset.mode;
+                
+                // Update active states
+                modeCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                
+                // Show corresponding input section
+                inputSections.forEach(section => section.classList.remove('active'));
+                document.getElementById(`${mode}Section`).classList.add('active');
+            });
+        });
+
+        // Toggle switches
+        const pdfToggle = document.getElementById('pdfToggle');
+        const urlToggle = document.getElementById('urlToggle');
+
+        pdfToggle.addEventListener('click', () => {
+            pdfToggle.classList.toggle('active');
+        });
+
+        urlToggle.addEventListener('click', () => {
+            urlToggle.classList.toggle('active');
+        });
+
+        // File upload handling
+        const pdfFileInput = document.getElementById('pdfFile');
+        const pdfFileName = document.getElementById('pdfFileName');
+
+        pdfFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                pdfFileName.textContent = `Selected: ${e.target.files[0].name}`;
+            } else {
+                pdfFileName.textContent = '';
+            }
+        });
+
+        // Generate presentation functions
+        function showLoading() {
+            document.getElementById('loadingState').classList.add('active');
+            inputSections.forEach(section => section.style.display = 'none');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingState').classList.remove('active');
+        }
+
+        function generateDummySlides(count, title) {
+            const dummyContent = [
+                {
+                    title: 'Introduction',
+                    content: '• Welcome to our presentation\n• Overview of key topics\n• What to expect'
+                },
+                {
+                    title: 'Main Concept',
+                    content: '• Core idea explained\n• Key benefits and features\n• Real-world applications'
+                },
+                {
+                    title: 'Key Points',
+                    content: '• Point one with details\n• Point two with examples\n• Point three with insights'
+                },
+                {
+                    title: 'Analysis',
+                    content: '• Data-driven insights\n• Trends and patterns\n• Strategic implications'
+                },
+                {
+                    title: 'Conclusion',
+                    content: '• Summary of key takeaways\n• Next steps and action items\n• Thank you for your attention'
+                }
+            ];
+
+            slides = [];
+            for (let i = 0; i < count; i++) {
+                const template = dummyContent[i % dummyContent.length];
+                slides.push({
+                    id: Date.now() + i,
+                    title: template.title,
+                    content: template.content
+                });
+            }
+
+            // Add to history
+            const presentation = {
+                title: title || 'Untitled Presentation',
+                slideCount: slides.length,
+                date: new Date().toLocaleDateString(),
+                slides: JSON.parse(JSON.stringify(slides)),
+                theme: currentTheme,
+                font: currentFont
+            };
+            presentationHistory.push(presentation);
+            updateProfileStats();
+
+            // Open editor
+            openEditor(presentation.title);
+        }
+
+        // Open editor page
+        function openEditor(title) {
+            dashboard.classList.remove('active');
+            editorPage.classList.add('active');
+            document.getElementById('editorPresentationTitle').textContent = title;
+            currentSlideIndex = 0;
+            renderEditorSlides();
+            loadCurrentSlide();
+        }
+
+        // Render slides in editor sidebar
+        function renderEditorSlides() {
+            const container = document.getElementById('slidePreviews');
+            container.innerHTML = '';
+
+            slides.forEach((slide, index) => {
+                const preview = document.createElement('div');
+                preview.className = 'slide-preview';
+                if (index === currentSlideIndex) {
+                    preview.classList.add('active');
+                }
+                preview.innerHTML = `
+                    <div class="slide-preview-number">Slide ${index + 1}</div>
+                    <div class="slide-preview-title">${slide.title}</div>
+                    <div class="slide-preview-content">${slide.content.substring(0, 50)}...</div>
+                `;
+                preview.addEventListener('click', () => {
+                    currentSlideIndex = index;
+                    loadCurrentSlide();
+                    renderEditorSlides();
+                });
+                container.appendChild(preview);
+            });
+        }
+
+        // Load current slide into editor
+        function loadCurrentSlide() {
+            if (slides.length === 0) return;
+            
+            const slide = slides[currentSlideIndex];
+            const titleEl = document.getElementById('currentSlideTitle');
+            const contentEl = document.getElementById('currentSlideContent');
+            
+            titleEl.textContent = slide.title;
+            contentEl.textContent = slide.content;
+            
+            applyEditorTheme();
+        }
+
+        // Save current slide edits
+        function saveCurrentSlide() {
+            if (slides.length === 0) return;
+            
+            const titleEl = document.getElementById('currentSlideTitle');
+            const contentEl = document.getElementById('currentSlideContent');
+            
+            slides[currentSlideIndex].title = titleEl.textContent;
+            slides[currentSlideIndex].content = contentEl.textContent;
+            
+            renderEditorSlides();
+        }
+
+        // Apply theme to editor slide
+        function applyEditorTheme() {
+            const slideEditor = document.getElementById('currentSlideEditor');
+            slideEditor.className = 'current-slide-editor';
+            slideEditor.classList.add(`theme-${currentTheme}`);
+            slideEditor.style.fontFamily = `'${currentFont}', sans-serif`;
+        }
+
+        // Editor theme and font selectors
+        const editorThemeSelect = document.getElementById('editorThemeSelect');
+        const editorFontSelect = document.getElementById('editorFontSelect');
+
+        editorThemeSelect.addEventListener('change', (e) => {
+            currentTheme = e.target.value;
+            applyEditorTheme();
+        });
+
+        editorFontSelect.addEventListener('change', (e) => {
+            currentFont = e.target.value;
+            applyEditorTheme();
+        });
+
+        // Auto-save on content edit
+        document.getElementById('currentSlideTitle').addEventListener('blur', saveCurrentSlide);
+        document.getElementById('currentSlideContent').addEventListener('blur', saveCurrentSlide);
+
+        // Add slide in editor
+        document.getElementById('editorAddSlideBtn').addEventListener('click', () => {
+            slides.push({
+                id: Date.now(),
+                title: 'New Slide Title',
+                content: '• Add your content here\n• Click to edit any text\n• Create amazing slides'
+            });
+            currentSlideIndex = slides.length - 1;
+            renderEditorSlides();
+            loadCurrentSlide();
+        });
+
+        // Back to dashboard
+        document.getElementById('backToDashboard').addEventListener('click', () => {
+            editorPage.classList.remove('active');
+            dashboard.classList.add('active');
+            
+            // Reset to home view
+            sidePanelItems.forEach(i => i.classList.remove('active'));
+            sidePanelItems[0].classList.add('active');
+            contentViews.forEach(view => view.classList.remove('active'));
+            document.getElementById('homeView').classList.add('active');
+        });
+
+        // Generate from different sources
+        document.getElementById('generateFromText').addEventListener('click', async () => {
+            const title = document.getElementById('textTitle').value.trim() || 'Text Presentation';
+            const content = document.getElementById('textContent').value.trim();
+            const slideCount = parseInt(document.getElementById('textSlideCount').value) || 5;
+            const btn = document.getElementById('generateFromText');
+            
+            // Validate content
+            if (!content || content.length < 50) {
+                API.showToast('Please enter at least 50 characters of content', 'error');
+                return;
+            }
+            
+            showLoading();
+            API.showButtonLoading(btn, 'Generating...');
+            
+            try {
+                // Call API to generate presentation
+                const response = await API.generateFromText(content, slideCount);
+                
+                // Convert API response to frontend format
+                slides = API.convertSlidesToFrontendFormat(response);
+                
+                // Add to history
+                const presentation = {
+                    title: response.title || title,
+                    slideCount: slides.length,
+                    date: new Date().toLocaleDateString(),
+                    slides: JSON.parse(JSON.stringify(slides)),
+                    theme: currentTheme,
+                    font: currentFont
+                };
+                presentationHistory.push(presentation);
+                updateProfileStats();
+                
+                // Open editor
+                hideLoading();
+                openEditor(presentation.title);
+                
+                API.showToast('Presentation generated successfully!', 'success');
+            } catch (error) {
+                hideLoading();
+                API.showToast(error.message || 'Failed to generate presentation', 'error');
+            } finally {
+                API.hideButtonLoading(btn);
+            }
+        });
+
+        document.getElementById('generateFromPdf').addEventListener('click', async () => {
+            const title = document.getElementById('pdfTitle').value.trim() || 'PDF Presentation';
+            const btn = document.getElementById('generateFromPdf');
+            const enhance = pdfToggle.classList.contains('active');
+            
+            if (pdfFileInput.files.length === 0) {
+                API.showToast('Please select a PDF file', 'error');
+                return;
+            }
+            
+            const pdfFile = pdfFileInput.files[0];
+            
+            // Validate file type
+            if (!pdfFile.type.includes('pdf')) {
+                API.showToast('Please select a valid PDF file', 'error');
+                return;
+            }
+            
+            const slideCount = parseInt(document.getElementById('pdfSlideCount').value) || 5;
+            
+            showLoading();
+            API.showButtonLoading(btn, 'Processing PDF...');
+            
+            try {
+                // Call API to generate presentation from PDF
+                const response = await API.generateFromPDF(pdfFile, enhance, slideCount);
+                
+                // Convert API response to frontend format
+                slides = API.convertSlidesToFrontendFormat(response);
+                
+                // Add to history
+                const presentation = {
+                    title: response.title || title,
+                    slideCount: slides.length,
+                    date: new Date().toLocaleDateString(),
+                    slides: JSON.parse(JSON.stringify(slides)),
+                    theme: currentTheme,
+                    font: currentFont,
+                    source: 'pdf'
+                };
+                presentationHistory.push(presentation);
+                updateProfileStats();
+                
+                // Open editor
+                hideLoading();
+                openEditor(presentation.title);
+                
+                API.showToast('PDF presentation generated!', 'success');
+            } catch (error) {
+                hideLoading();
+                API.showToast(error.message || 'Failed to process PDF', 'error');
+            } finally {
+                API.hideButtonLoading(btn);
+            }
+        });
+
+        document.getElementById('generateFromUrl').addEventListener('click', async () => {
+            const title = document.getElementById('urlTitle').value.trim() || 'URL Presentation';
+            const url = document.getElementById('urlInput').value.trim();
+            const btn = document.getElementById('generateFromUrl');
+            const enhance = urlToggle.classList.contains('active');
+            
+            if (!url) {
+                API.showToast('Please enter a URL', 'error');
+                return;
+            }
+            
+            // Validate URL format
+            try {
+                new URL(url);
+            } catch (e) {
+                API.showToast('Please enter a valid URL', 'error');
+                return;
+            }
+            
+            const slideCount = parseInt(document.getElementById('urlSlideCount').value) || 5;
+            
+            showLoading();
+            API.showButtonLoading(btn, 'Scraping URL...');
+            
+            try {
+                // Call API to generate presentation from URL
+                const response = await API.generateFromURL(url, enhance, slideCount);
+                
+                // Convert API response to frontend format
+                slides = API.convertSlidesToFrontendFormat(response);
+                
+                // Add to history
+                const presentation = {
+                    title: response.title || title,
+                    slideCount: slides.length,
+                    date: new Date().toLocaleDateString(),
+                    slides: JSON.parse(JSON.stringify(slides)),
+                    theme: currentTheme,
+                    font: currentFont,
+                    source: 'url',
+                    sourceUrl: url
+                };
+                presentationHistory.push(presentation);
+                updateProfileStats();
+                
+                // Open editor
+                hideLoading();
+                openEditor(presentation.title);
+                
+                API.showToast('URL presentation generated!', 'success');
+            } catch (error) {
+                hideLoading();
+                API.showToast(error.message || 'Failed to scrape URL', 'error');
+            } finally {
+                API.hideButtonLoading(btn);
+            }
+        });
+
+        document.getElementById('generateFromTopic').addEventListener('click', async () => {
+            const title = document.getElementById('topicTitle').value.trim() || 'Topic Presentation';
+            const topic = document.getElementById('topicInput').value.trim();
+            const keywords = document.getElementById('topicKeywords').value.trim();
+            const count = parseInt(document.getElementById('slideCount').value) || 5;
+            const btn = document.getElementById('generateFromTopic');
+            
+            if (!topic) {
+                API.showToast('Please enter a topic', 'error');
+                return;
+            }
+            
+            // Combine topic with keywords if provided
+            const fullTopic = keywords ? `${topic} - Keywords: ${keywords}` : topic;
+            
+            showLoading();
+            API.showButtonLoading(btn, 'Generating...');
+            
+            try {
+                // Call API to generate presentation from topic
+                const response = await API.generateFromTopic(fullTopic, count);
+                
+                // Convert API response to frontend format
+                slides = API.convertSlidesToFrontendFormat(response);
+                
+                // Add to history
+                const presentation = {
+                    title: response.title || title,
+                    slideCount: slides.length,
+                    date: new Date().toLocaleDateString(),
+                    slides: JSON.parse(JSON.stringify(slides)),
+                    theme: currentTheme,
+                    font: currentFont,
+                    source: 'topic',
+                    topic: topic
+                };
+                presentationHistory.push(presentation);
+                updateProfileStats();
+                
+                // Open editor
+                hideLoading();
+                openEditor(presentation.title);
+                
+                API.showToast('Topic presentation generated!', 'success');
+            } catch (error) {
+                hideLoading();
+                API.showToast(error.message || 'Failed to generate presentation', 'error');
+            } finally {
+                API.hideButtonLoading(btn);
+            }
+        });
+
+        // Add new slide
+        document.getElementById('addSlideBtn').addEventListener('click', () => {
+            slides.push({
+                id: Date.now(),
+                title: 'New Slide Title',
+                content: '• Add your content here\n• Click to edit any text\n• Create amazing slides'
+            });
+            renderSlides();
+        });
+
+        // New presentation
+        document.getElementById('newPresentationBtn').addEventListener('click', () => {
+            resetDashboard();
+        });
+
+        function resetDashboard() {
+            slides = [];
+            document.getElementById('presentationOutput').classList.remove('active');
+            inputSections.forEach(section => {
+                section.classList.remove('active');
+                section.style.display = '';
+            });
+            modeCards.forEach(card => card.classList.remove('active'));
+            
+            // Reset forms
+            document.getElementById('textTitle').value = '';
+            document.getElementById('textContent').value = '';
+            document.getElementById('pdfTitle').value = '';
+            document.getElementById('pdfFile').value = '';
+            pdfFileName.textContent = '';
+            document.getElementById('urlTitle').value = '';
+            document.getElementById('urlInput').value = '';
+            document.getElementById('topicTitle').value = '';
+            document.getElementById('topicInput').value = '';
+            document.getElementById('topicKeywords').value = '';
+            document.getElementById('slideCount').value = '5';
+        }
+
+        // Theme and font selection
+        const themeSelect = document.getElementById('themeSelect');
+        const fontSelect = document.getElementById('fontSelect');
+
+        themeSelect.addEventListener('change', (e) => {
+            currentTheme = e.target.value;
+            applyThemeAndFont();
+        });
+
+        fontSelect.addEventListener('change', (e) => {
+            currentFont = e.target.value;
+            applyThemeAndFont();
+        });
+
+        function applyThemeAndFont() {
+            const slideCards = document.querySelectorAll('.slide-card');
+            slideCards.forEach(card => {
+                // Remove all theme classes
+                card.className = card.className.replace(/theme-[\w-]+/g, '');
+                // Add current theme
+                card.classList.add(`theme-${currentTheme}`);
+                // Apply font
+                card.style.fontFamily = `'${currentFont}', sans-serif`;
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Apply initial config
+            onConfigChange(window.elementSdk ? window.elementSdk.config : defaultConfig);
+            
+            // Check if user is already authenticated
+            if (API.isAuthenticated()) {
+                try {
+                    const user = await API.checkAuth();
+                    if (user) {
+                        currentUser = user;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        document.getElementById('userName').textContent = currentUser.name;
+                        updateUserProfile(currentUser);
+                        loginPage.classList.add('hidden');
+                        dashboard.classList.add('active');
+                        
+                        // Load presentation history from API
+                        loadPresentationHistory();
+                    }
+                } catch (error) {
+                    console.error('Auto-login failed:', error);
+                    // Show login page
+                    loginPage.classList.remove('hidden');
+                }
+            } else {
+                // Show login page
+                loginPage.classList.remove('hidden');
+            }
+        });
+        
+        // Load presentation history from API
+        async function loadPresentationHistory() {
+            try {
+                const response = await API.getPresentations(1, 50);
+                if (response.success && response.data?.presentations) {
+                    // Convert API presentations to local format
+                    presentationHistory = response.data.presentations.map(p => ({
+                        id: p._id,
+                        title: p.title,
+                        slideCount: p.slides?.length || p.slideCount || 0,
+                        date: new Date(p.createdAt).toLocaleDateString(),
+                        slides: p.slides ? p.slides.map((s, i) => ({
+                            id: Date.now() + i,
+                            title: s.slideTitle,
+                            content: Array.isArray(s.points) ? s.points.map(pt => `• ${pt}`).join('\n') : ''
+                        })) : [],
+                        theme: currentTheme,
+                        font: currentFont,
+                        source: p.sourceType
+                    }));
+                    updateProfileStats();
+                }
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        }
+        
+        // Export to PowerPoint function
+        async function exportToPowerPoint() {
+            const btn = document.getElementById('exportPPTXBtn');
+            
+            if (slides.length === 0) {
+                API.showToast('No slides to export', 'error');
+                return;
+            }
+            
+            // Convert slides to API format
+            const presentation = {
+                title: document.getElementById('editorPresentationTitle').textContent || 'Presentation',
+                slides: slides.map(slide => ({
+                    slideTitle: slide.title,
+                    points: slide.content.split('\n').map(line => line.replace(/^[•\-\*]\s*/, '').trim()).filter(line => line.length > 0)
+                }))
+            };
+            
+            // Map frontend theme to backend theme
+            const themeMap = {
+                'cyber-purple': 'modern',
+                'neon-tech': 'dark',
+                'corporate-blue': 'corporate',
+                'sunset-gradient': 'nature',
+                'dark-mode-pro': 'dark',
+                'pastel-dream': 'professional',
+                'ocean-wave': 'modern',
+                'royal-gold': 'corporate',
+                'minimal-white': 'professional',
+                'vibrant-education': 'nature'
+            };
+            const backendTheme = themeMap[currentTheme] || 'professional';
+            
+            try {
+                API.showButtonLoading(btn, 'Exporting...');
+                
+                const blob = await API.exportToPowerPoint(presentation, backendTheme);
+                
+                // Create download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${presentation.title.replace(/[^a-z0-9]/gi, '_')}_presentation.pptx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                API.showToast('Presentation exported successfully!', 'success');
+            } catch (error) {
+                console.error('Export failed:', error);
+                API.showToast(error.message || 'Failed to export presentation', 'error');
+            } finally {
+                API.hideButtonLoading(btn);
+            }
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b510d38304c25e0',t:'MTc2NjkyNDg0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

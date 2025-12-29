@@ -1,0 +1,32 @@
+# Backend - AI Presentation Maker
+
+## Dependencies
+
+node_modules/
+
+## Environment Variables
+
+.env
+
+## Logs
+
+logs
+*.log
+npm-debug.log*
+
+## OS Files
+
+.DS_Store
+Thumbs.db
+
+## IDE
+
+.idea/
+.vscode/
+*.swp
+*.swo
+
+## Uploads (temporary)
+
+uploads/
+temp/
