@@ -49,24 +49,42 @@ function isAuthenticated() {
 
 /**
  * Make an authenticated API request
+ * CRITICAL: This is the ONLY function that should make fetch calls
  * @param {string} endpoint - API endpoint (e.g., '/auth/login')
  * @param {object} options - Fetch options
+ * @param {boolean} requiresAuth - Whether this endpoint requires authentication (default: true)
  * @returns {Promise<object>} API response
  */
-async function apiRequest(endpoint, options = {}) {
+async function apiRequest(endpoint, options = {}, requiresAuth = true) {
     const url = `${API_BASE_URL}${endpoint}`;
     
-    // Default headers
+    // Get fresh token from localStorage for EVERY request
+    const token = localStorage.getItem('authToken');
+    
+    // AUTH GUARD: If auth required but no token, redirect to login
+    if (requiresAuth && !token && !endpoint.includes('/auth/')) {
+        console.error('[API] No token found - redirecting to login');
+        localStorage.removeItem('currentUser');
+        showLoginPage();
+        throw new Error('Please login to continue');
+    }
+    
+    // Build headers - ALWAYS attach token if it exists
     const headers = {
         'Content-Type': 'application/json',
         ...options.headers
     };
     
-    // Add auth token if available
-    const token = getToken();
+    // CRITICAL: Always attach Authorization header if token exists
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
+    
+    // Debug logging
+    console.log(`[API] ${options.method || 'GET'} ${endpoint}`, {
+        hasToken: !!token,
+        tokenPreview: token ? `${token.substring(0, 20)}...` : 'none'
+    });
     
     try {
         const response = await fetch(url, {
@@ -74,31 +92,39 @@ async function apiRequest(endpoint, options = {}) {
             headers
         });
         
-        const data = await response.json();
+        // Try to parse JSON, handle non-JSON responses
+        let data;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const text = await response.text();
+            data = { message: text };
+        }
         
-        // Handle unauthorized responses
+        // Handle 401 Unauthorized - ALWAYS clear auth and redirect
         if (response.status === 401) {
-            removeToken();
-            // Redirect to login if on protected page
-            if (!window.location.hash.includes('login')) {
-                showLoginPage();
-            }
+            console.warn('[API] 401 Unauthorized - clearing all auth data');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            showLoginPage();
             throw new Error(data.message || 'Session expired. Please login again.');
         }
         
         if (!response.ok) {
-            throw new Error(data.message || 'Request failed');
+            throw new Error(data.message || `Request failed with status ${response.status}`);
         }
         
         return data;
     } catch (error) {
-        console.error('API Request Error:', error);
+        console.error('[API] Request Error:', endpoint, error.message);
         throw error;
     }
 }
 
 /**
  * Make a multipart form data request (for file uploads)
+ * CRITICAL: Uses same auth pattern as apiRequest
  * @param {string} endpoint - API endpoint
  * @param {FormData} formData - Form data with file
  * @returns {Promise<object>} API response
@@ -106,11 +132,27 @@ async function apiRequest(endpoint, options = {}) {
 async function apiUpload(endpoint, formData) {
     const url = `${API_BASE_URL}${endpoint}`;
     
-    const headers = {};
-    const token = getToken();
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+    // Get fresh token from localStorage for EVERY request
+    const token = localStorage.getItem('authToken');
+    
+    // AUTH GUARD: Redirect if no token
+    if (!token) {
+        console.error('[API Upload] No token found - redirecting to login');
+        localStorage.removeItem('currentUser');
+        showLoginPage();
+        throw new Error('Please login to continue');
     }
+    
+    // Don't set Content-Type for FormData (browser sets it with boundary)
+    const headers = {
+        'Authorization': `Bearer ${token}`
+    };
+    
+    // Debug logging
+    console.log(`[API Upload] POST ${endpoint}`, {
+        hasToken: !!token,
+        tokenPreview: token ? `${token.substring(0, 20)}...` : 'none'
+    });
     
     try {
         const response = await fetch(url, {
@@ -119,15 +161,32 @@ async function apiUpload(endpoint, formData) {
             body: formData
         });
         
-        const data = await response.json();
+        // Try to parse JSON
+        let data;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const text = await response.text();
+            data = { message: text };
+        }
+        
+        // Handle 401 Unauthorized - clear auth and redirect
+        if (response.status === 401) {
+            console.warn('[API Upload] 401 Unauthorized - clearing all auth data');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            showLoginPage();
+            throw new Error(data.message || 'Session expired. Please login again.');
+        }
         
         if (!response.ok) {
-            throw new Error(data.message || 'Upload failed');
+            throw new Error(data.message || `Upload failed with status ${response.status}`);
         }
         
         return data;
     } catch (error) {
-        console.error('Upload Error:', error);
+        console.error('[API Upload] Error:', endpoint, error.message);
         throw error;
     }
 }
@@ -144,14 +203,25 @@ async function apiUpload(endpoint, formData) {
  * @returns {Promise<object>} Signup response with token
  */
 async function signupAPI(name, email, password) {
+    // Auth endpoints don't require existing token
     const response = await apiRequest('/auth/signup', {
         method: 'POST',
         body: JSON.stringify({ name, email, password })
-    });
+    }, false);
     
-    // Store token on successful signup
-    if (response.data?.token) {
-        setToken(response.data.token);
+    // CRITICAL: Store token IMMEDIATELY in localStorage
+    const token = response.data?.token || response.token;
+    if (token) {
+        localStorage.setItem('authToken', token);
+        console.log('[API] Token stored after signup:', token.substring(0, 20) + '...');
+        
+        // Verify storage worked
+        const stored = localStorage.getItem('authToken');
+        if (stored !== token) {
+            console.error('[API] Token storage verification FAILED!');
+        }
+    } else {
+        console.warn('[API] No token in signup response!', response);
     }
     
     return response;
@@ -164,14 +234,25 @@ async function signupAPI(name, email, password) {
  * @returns {Promise<object>} Login response with token
  */
 async function loginAPI(email, password) {
+    // Auth endpoints don't require existing token
     const response = await apiRequest('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password })
-    });
+    }, false);
     
-    // Store token on successful login
-    if (response.data?.token) {
-        setToken(response.data.token);
+    // CRITICAL: Store token IMMEDIATELY in localStorage
+    const token = response.data?.token || response.token;
+    if (token) {
+        localStorage.setItem('authToken', token);
+        console.log('[API] Token stored after login:', token.substring(0, 20) + '...');
+        
+        // Verify storage worked
+        const stored = localStorage.getItem('authToken');
+        if (stored !== token) {
+            console.error('[API] Token storage verification FAILED!');
+        }
+    } else {
+        console.warn('[API] No token in login response!', response);
     }
     
     return response;
@@ -188,11 +269,12 @@ async function getMeAPI() {
 }
 
 /**
- * Logout user
+ * Logout user - clears ALL auth data from localStorage
  */
 function logoutAPI() {
-    removeToken();
+    localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
+    console.log('[API] Logged out - all auth data cleared');
 }
 
 // ============================================
@@ -305,6 +387,7 @@ async function deletePresentationAPI(id) {
 
 /**
  * Export presentation to PowerPoint file
+ * CRITICAL: Uses same auth pattern - token from localStorage
  * @param {object} presentation - Presentation object with title and slides
  * @param {string} theme - Theme name (professional, dark, modern, nature, corporate)
  * @returns {Promise<Blob>} PowerPoint file as blob
@@ -312,14 +395,27 @@ async function deletePresentationAPI(id) {
 async function exportToPowerPointAPI(presentation, theme = 'professional') {
     const url = `${API_BASE_URL}/generate/export`;
     
+    // Get fresh token from localStorage for EVERY request
+    const token = localStorage.getItem('authToken');
+    
+    // AUTH GUARD: Redirect if no token
+    if (!token) {
+        console.error('[API Export] No token found - redirecting to login');
+        localStorage.removeItem('currentUser');
+        showLoginPage();
+        throw new Error('Please login to continue');
+    }
+    
     const headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
     };
     
-    const token = getToken();
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
+    // Debug logging
+    console.log('[API] POST /generate/export', {
+        hasToken: !!token,
+        tokenPreview: token ? `${token.substring(0, 20)}...` : 'none'
+    });
     
     try {
         const response = await fetch(url, {
@@ -328,15 +424,24 @@ async function exportToPowerPointAPI(presentation, theme = 'professional') {
             body: JSON.stringify({ presentation, theme })
         });
         
+        // Handle 401 Unauthorized - clear auth and redirect
+        if (response.status === 401) {
+            console.warn('[API Export] 401 Unauthorized - clearing all auth data');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            showLoginPage();
+            throw new Error('Session expired. Please login again.');
+        }
+        
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || 'Failed to export presentation');
+            throw new Error(errorData.message || `Failed to export presentation (${response.status})`);
         }
         
         // Return blob for file download
         return await response.blob();
     } catch (error) {
-        console.error('Export Error:', error);
+        console.error('[API Export] Error:', error.message);
         throw error;
     }
 }
@@ -457,17 +562,24 @@ function showToast(message, type = 'info') {
  * @returns {Array} Slides in frontend format
  */
 function convertSlidesToFrontendFormat(apiResponse) {
+    console.log('API Response received:', JSON.stringify(apiResponse, null, 2));
+    
     if (!apiResponse.slides || !Array.isArray(apiResponse.slides)) {
         return [];
     }
     
-    return apiResponse.slides.map((slide, index) => ({
+    const converted = apiResponse.slides.map((slide, index) => ({
         id: Date.now() + index,
         title: slide.slideTitle || `Slide ${index + 1}`,
         content: Array.isArray(slide.points) 
             ? slide.points.map(p => `• ${p}`).join('\n')
-            : '• No content'
+            : '• No content',
+        imageUrl: slide.imageUrl || null,
+        imageKeyword: slide.imageKeyword || null
     }));
+    
+    console.log('Converted slides:', JSON.stringify(converted, null, 2));
+    return converted;
 }
 
 // ============================================
@@ -503,21 +615,30 @@ function showDashboard() {
 
 /**
  * Check authentication and redirect accordingly
+ * AUTH GUARD: This verifies token exists and is valid
  */
 async function checkAuth() {
-    if (!isAuthenticated()) {
+    const token = localStorage.getItem('authToken');
+    
+    // No token = not authenticated
+    if (!token) {
+        console.log('[API] checkAuth: No token found');
         showLoginPage();
         return null;
     }
     
     try {
+        // Verify token is still valid with backend
         const response = await getMeAPI();
         if (response.data?.user) {
+            console.log('[API] checkAuth: Token valid, user:', response.data.user.email);
             return response.data.user;
         }
     } catch (error) {
-        console.error('Auth check failed:', error);
-        removeToken();
+        console.error('[API] checkAuth failed:', error.message);
+        // Clear invalid token
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
     }
     
     showLoginPage();

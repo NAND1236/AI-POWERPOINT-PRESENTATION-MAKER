@@ -1662,11 +1662,18 @@
      </div>
      <div class="editor-main">
       <div class="current-slide-editor" id="currentSlideEditor">
-       <div class="slide-editor-title" contenteditable="true" id="currentSlideTitle">
-        Slide Title
-       </div>
-       <div class="slide-editor-content" contenteditable="true" id="currentSlideContent">
-        • Slide content here\n• Click to edit
+       <div class="slide-editor-content-wrapper" style="display: flex; gap: 30px;">
+        <div class="slide-editor-text" style="flex: 1;">
+         <div class="slide-editor-title" contenteditable="true" id="currentSlideTitle">
+          Slide Title
+         </div>
+         <div class="slide-editor-content" contenteditable="true" id="currentSlideContent">
+          • Slide content here\n• Click to edit
+         </div>
+        </div>
+        <div class="slide-editor-image" id="currentSlideImage" style="width: 300px; min-height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px; overflow: hidden;">
+         <span style="color: var(--text-secondary); font-size: 14px;">No image</span>
+        </div>
        </div>
       </div>
      </div>
@@ -1958,6 +1965,24 @@
                     const response = await API.login(email, password);
                     
                     if (response.success && response.data) {
+                        // CRITICAL: Verify token was stored before proceeding
+                        const storedToken = localStorage.getItem('authToken');
+                        console.log('[LOGIN] Token verification:', {
+                            hasToken: !!storedToken,
+                            tokenPreview: storedToken ? storedToken.substring(0, 20) + '...' : 'NONE'
+                        });
+                        
+                        if (!storedToken) {
+                            // Token not stored - store it manually
+                            const token = response.data.token;
+                            if (token) {
+                                localStorage.setItem('authToken', token);
+                                console.log('[LOGIN] Token stored manually');
+                            } else {
+                                throw new Error('No token received from server');
+                            }
+                        }
+                        
                         // Store user data
                         currentUser = response.data.user;
                         localStorage.setItem('currentUser', JSON.stringify(currentUser));
@@ -1972,7 +1997,7 @@
                         
                         API.showToast('Login successful!', 'success');
                         
-                        // Load presentation history
+                        // Load presentation history (token is now guaranteed to be stored)
                         loadPresentationHistory();
                     }
                 } catch (error) {
@@ -2211,7 +2236,15 @@
                 if (index === currentSlideIndex) {
                     preview.classList.add('active');
                 }
+                
+                const imageHtml = slide.imageUrl 
+                    ? `<div style="width: 100%; height: 60px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; background: rgba(0,0,0,0.2);">
+                         <img src="${slide.imageUrl}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                       </div>`
+                    : '';
+                
                 preview.innerHTML = `
+                    ${imageHtml}
                     <div class="slide-preview-number">Slide ${index + 1}</div>
                     <div class="slide-preview-title">${slide.title}</div>
                     <div class="slide-preview-content">${slide.content.substring(0, 50)}...</div>
@@ -2232,9 +2265,17 @@
             const slide = slides[currentSlideIndex];
             const titleEl = document.getElementById('currentSlideTitle');
             const contentEl = document.getElementById('currentSlideContent');
+            const imageEl = document.getElementById('currentSlideImage');
             
             titleEl.textContent = slide.title;
             contentEl.textContent = slide.content;
+            
+            // Update image display
+            if (slide.imageUrl) {
+                imageEl.innerHTML = `<img src="${slide.imageUrl}" alt="Slide image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;">`;
+            } else {
+                imageEl.innerHTML = `<span style="color: var(--text-secondary); font-size: 14px;">No image</span>`;
+            }
             
             applyEditorTheme();
         }
@@ -2300,6 +2341,9 @@
             sidePanelItems[0].classList.add('active');
             contentViews.forEach(view => view.classList.remove('active'));
             document.getElementById('homeView').classList.add('active');
+            
+            // Reset all forms and buttons using the centralized function
+            resetDashboard();
         });
 
         // Generate from different sources
@@ -2312,6 +2356,19 @@
             // Validate content
             if (!content || content.length < 50) {
                 API.showToast('Please enter at least 50 characters of content', 'error');
+                return;
+            }
+            
+            // DEBUG: Check token before making request
+            const tokenCheck = localStorage.getItem('authToken');
+            console.log('[GENERATE TEXT] Token check before request:', {
+                hasToken: !!tokenCheck,
+                tokenPreview: tokenCheck ? tokenCheck.substring(0, 20) + '...' : 'NONE'
+            });
+            
+            if (!tokenCheck) {
+                API.showToast('Please login first', 'error');
+                API.showLoginPage();
                 return;
             }
             
@@ -2476,6 +2533,19 @@
                 return;
             }
             
+            // DEBUG: Check token before making request
+            const tokenCheck = localStorage.getItem('authToken');
+            console.log('[GENERATE TOPIC] Token check before request:', {
+                hasToken: !!tokenCheck,
+                tokenPreview: tokenCheck ? tokenCheck.substring(0, 20) + '...' : 'NONE'
+            });
+            
+            if (!tokenCheck) {
+                API.showToast('Please login first', 'error');
+                API.showLoginPage();
+                return;
+            }
+            
             // Combine topic with keywords if provided
             const fullTopic = keywords ? `${topic} - Keywords: ${keywords}` : topic;
             
@@ -2543,15 +2613,33 @@
             // Reset forms
             document.getElementById('textTitle').value = '';
             document.getElementById('textContent').value = '';
+            document.getElementById('textSlideCount').value = '5';
             document.getElementById('pdfTitle').value = '';
             document.getElementById('pdfFile').value = '';
+            document.getElementById('pdfSlideCount').value = '5';
             pdfFileName.textContent = '';
             document.getElementById('urlTitle').value = '';
             document.getElementById('urlInput').value = '';
+            document.getElementById('urlSlideCount').value = '5';
             document.getElementById('topicTitle').value = '';
             document.getElementById('topicInput').value = '';
             document.getElementById('topicKeywords').value = '';
             document.getElementById('slideCount').value = '5';
+            
+            // Reset all generate buttons (fix: ensure buttons are re-enabled)
+            const buttons = ['generateFromText', 'generateFromPdf', 'generateFromUrl', 'generateFromTopic'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.disabled = false;
+                    if (btn.dataset.originalText) {
+                        btn.innerHTML = btn.dataset.originalText;
+                    }
+                }
+            });
+            
+            // Hide loading overlay
+            hideLoading();
         }
 
         // Theme and font selection
@@ -2647,12 +2735,14 @@
                 return;
             }
             
-            // Convert slides to API format
+            // Convert slides to API format (including imageUrl for images in PPT)
             const presentation = {
                 title: document.getElementById('editorPresentationTitle').textContent || 'Presentation',
                 slides: slides.map(slide => ({
                     slideTitle: slide.title,
-                    points: slide.content.split('\n').map(line => line.replace(/^[•\-\*]\s*/, '').trim()).filter(line => line.length > 0)
+                    points: slide.content.split('\n').map(line => line.replace(/^[•\-\*]\s*/, '').trim()).filter(line => line.length > 0),
+                    imageUrl: slide.imageUrl || null,
+                    imageKeyword: slide.imageKeyword || null
                 }))
             };
             
@@ -2661,11 +2751,11 @@
                 'cyber-purple': 'modern',
                 'neon-tech': 'dark',
                 'corporate-blue': 'corporate',
-                'sunset-gradient': 'nature',
+                'sunset-gradient': 'sunset',
                 'dark-mode-pro': 'dark',
                 'pastel-dream': 'professional',
-                'ocean-wave': 'modern',
-                'royal-gold': 'corporate',
+                'ocean-wave': 'corporate',
+                'royal-gold': 'royal',
                 'minimal-white': 'professional',
                 'vibrant-education': 'nature'
             };

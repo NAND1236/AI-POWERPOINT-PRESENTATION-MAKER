@@ -14,6 +14,12 @@ const protect = async (req, res, next) => {
     try {
         let token;
 
+        // DEBUG: Log incoming authorization header
+        console.log('[AUTH] Headers received:', {
+            hasAuth: !!req.headers.authorization,
+            authHeader: req.headers.authorization ? req.headers.authorization.substring(0, 30) + '...' : 'NONE'
+        });
+
         // Check for token in Authorization header
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             token = req.headers.authorization.split(' ')[1];
@@ -21,11 +27,14 @@ const protect = async (req, res, next) => {
 
         // Check if token exists
         if (!token) {
+            console.log('[AUTH] No token in request');
             return res.status(401).json({
                 success: false,
                 message: 'Not authorized, no token provided'
             });
         }
+
+        console.log('[AUTH] Token found:', token.substring(0, 20) + '...');
 
         try {
             // Verify token

@@ -24,7 +24,7 @@ const app = express();
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production' 
         ? process.env.FRONTEND_URL 
-        : ['http://localhost:3000', 'http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:8080'],
+        : true,  // Allow ALL origins in development
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
